@@ -501,17 +501,6 @@ public class DiscordSRV extends JavaPlugin {
                 this,
                 () -> Bukkit.getPluginManager().disablePlugin(this)
         );
-
-        PluginCommand pluginCommand = getCommand("discordsrv");
-        if (pluginCommand != null && pluginCommand.getPlugin() == this) {
-            try {
-                Field owningPlugin = pluginCommand.getClass().getDeclaredField("owningPlugin");
-                if (!owningPlugin.isAccessible()) owningPlugin.setAccessible(true);
-
-                // make the command's owning plugin always enabled (give a better error to the user)
-                owningPlugin.set(pluginCommand, new AlwaysEnabledPluginDynamicProxy().getProxy(this));
-            } catch (Throwable ignored) {}
-        }
     }
 
     public void init() {
@@ -1372,10 +1361,6 @@ public class DiscordSRV extends JavaPlugin {
 
         voiceModule = new VoiceModule();
 
-        PluginCommand discordCommand = getCommand("discord");
-        if (discordCommand != null && discordCommand.getPlugin() != this) {
-            DiscordSRV.warning("/discord command is being handled by plugin other than DiscordSRV. You must use /discordsrv instead.");
-        }
 
         alertListener = new AlertListener();
         jda.addEventListener(alertListener);
